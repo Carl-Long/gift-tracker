@@ -1,0 +1,27 @@
+name: national-transport-database
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    container_name: gift-tracker-sql
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SQL_PASSWORD}
+      MSSQL_PID: "Developer"
+
+    ports:
+      - "14333:1433"
+
+    volumes:
+      - gift_tracker_sql_data:/var/opt/mssql
+
+    mem_limit: 2g
+    cpus: 1.0
+
+    restart: unless-stopped
+
+volumes:
+  national_transport_sql_data:
+    name: gift_tracker_sql_data
