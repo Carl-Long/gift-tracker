@@ -1,4 +1,4 @@
-name: national-transport-database
+name: gift-tracker
 
 services:
   sql:
@@ -23,5 +23,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  national_transport_sql_data:
+  gift_tracker_sql_data:
     name: gift_tracker_sql_data

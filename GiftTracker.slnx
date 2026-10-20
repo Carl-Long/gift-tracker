@@ -5,4 +5,8 @@
     <Project Path="src/GiftTracker.Domain/GiftTracker.Domain.csproj" />
     <Project Path="src/GiftTracker.Infrastructure/GiftTracker.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GiftTracker.Application.Tests/GiftTracker.Application.Tests.csproj" />
+    <Project Path="tests/GiftTracker.Domain.Tests/GiftTracker.Domain.Tests.csproj" />
+  </Folder>
 </Solution>

@@ -1,6 +1,6 @@
-@GiftTracker.Api_HostAddress = http://localhost:5194
+@host = https://localhost:7000
 
-GET {{GiftTracker.Api_HostAddress}}/weatherforecast/
+GET {{host}}/openapi/v1.json
 Accept: application/json
 
 ###
