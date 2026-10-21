@@ -1,9 +1,11 @@
+using GiftTracker.Infrastructure;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
