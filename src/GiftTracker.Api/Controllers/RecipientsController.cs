@@ -48,4 +48,16 @@ public class RecipientsController(IRecipientService recipientService) : Controll
         var recipient = await recipientService.UpdateRecipientAsync(id, updateRecipientDto, cancellationToken);
         return Ok(recipient);
     }
+
+    [HttpPatch("{id:guid}")]
+    [EndpointSummary("Update recipient archive status")]
+    [EndpointDescription("Set isArchived to true to archive the recipient, or false to restore it.")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateRecipientArchiveStatus(Guid id, [FromBody] UpdateRecipientArchiveStatusDto updateRecipientArchiveStatusDto, CancellationToken cancellationToken)
+    {
+        await recipientService.SetRecipientArchivedStatusAsync(id, updateRecipientArchiveStatusDto.IsArchived, cancellationToken);
+        return NoContent();
+    }
 }

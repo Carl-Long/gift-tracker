@@ -42,6 +42,25 @@ Accept: application/json
     "relationship": "ImmediateFamily"
 }
 
+
+### Archive recipient
+PATCH {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{
+    "isArchived": true
+}
+
+### Restore recipient
+PATCH {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{
+    "isArchived": false
+}
+
 ### Get recipient - Not found
 GET {{host}}/api/v1/recipients/00000000-0000-0000-0000-000000000001
 Authorization: Bearer {{$auth.token("keycloak")}}
@@ -56,3 +75,11 @@ Accept: application/json
 {
     "name": "   "
 }
+
+### Update archive status - Missing field
+PATCH {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{}
+

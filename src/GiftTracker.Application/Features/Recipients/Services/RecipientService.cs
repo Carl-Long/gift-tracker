@@ -82,4 +82,29 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
 
         return RecipientMapper.ToRecipientDto(recipient);
     }
+
+
+    public async Task SetRecipientArchivedStatusAsync(Guid recipientId, bool isArchived, CancellationToken cancellationToken = default)
+    {
+        var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
+
+        var recipient = await dbContext.Recipients
+            .SingleOrDefaultAsync(recipient => recipient.Id == recipientId && recipient.UserId == userId, cancellationToken);
+
+        if (recipient is null)
+        {
+            throw new NotFoundException("Recipient not found.");
+        }
+
+        if (isArchived)
+        {
+            recipient.Archive();
+        }
+        else
+        {
+            recipient.Restore();
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
 }
