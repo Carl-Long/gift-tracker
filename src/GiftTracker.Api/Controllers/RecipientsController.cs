@@ -28,4 +28,16 @@ public class RecipientsController(IRecipientService recipientService) : Controll
         var recipient = await recipientService.GetRecipientByIdAsync(id, cancellationToken);
         return Ok(recipient);
     }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(RecipientDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<RecipientDto>> CreateRecipient([FromBody] CreateRecipientDto createRecipientDto, CancellationToken cancellationToken)
+    {
+        var recipient = await recipientService.CreateRecipientAsync(createRecipientDto, cancellationToken);
+
+        var version = HttpContext.RequestedApiVersion?.ToString();
+        
+        return CreatedAtAction(nameof(GetRecipientById), new { version, id = recipient.Id }, recipient);
+    }
 }

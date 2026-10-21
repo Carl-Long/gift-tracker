@@ -3,6 +3,7 @@ using GiftTracker.Application.Common.Exceptions;
 using GiftTracker.Application.Features.Recipients.Dtos;
 using GiftTracker.Application.Features.Recipients.Mapping;
 using GiftTracker.Application.Features.Users;
+using GiftTracker.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiftTracker.Application.Features.Recipients.Services;
@@ -26,7 +27,6 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
             .ToListAsync(cancellationToken);
     }
 
-
     public async Task<RecipientDto> GetRecipientByIdAsync(Guid recipientId, CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
@@ -39,4 +39,30 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
 
         return recipient ?? throw new NotFoundException("Recipient not found.");
     }
+
+
+    public async Task<RecipientDto> CreateRecipientAsync(CreateRecipientDto createRecipientDto, CancellationToken cancellationToken = default)
+    {
+        var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
+
+        var recipient = new Recipient(
+            userId,
+            createRecipientDto.Name,
+            createRecipientDto.Description,
+            createRecipientDto.BirthDate,
+            createRecipientDto.Relationship);
+
+        dbContext.Recipients.Add(recipient);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new RecipientDto(
+            recipient.Id,
+            recipient.Name,
+            recipient.Description,
+            recipient.BirthDate,
+            recipient.Relationship,
+            recipient.IsArchived);
+    }
+
 }

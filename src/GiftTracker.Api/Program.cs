@@ -1,11 +1,20 @@
+using System.Text.Json.Serialization;
 using GiftTracker.Api.ExceptionHandling;
 using GiftTracker.Api.Extensions;
 using GiftTracker.Application;
+using GiftTracker.Domain.Enums;
 using GiftTracker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter<RecipientRelationship>(allowIntegerValues: false));
+    });
+
 builder.Services.AddApiDocumentation(builder.Configuration);
 builder.Services.AddApiAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddInfrastructure(builder.Configuration);
