@@ -35,9 +35,17 @@ public class RecipientsController(IRecipientService recipientService) : Controll
     public async Task<ActionResult<RecipientDto>> CreateRecipient([FromBody] CreateRecipientDto createRecipientDto, CancellationToken cancellationToken)
     {
         var recipient = await recipientService.CreateRecipientAsync(createRecipientDto, cancellationToken);
-
         var version = HttpContext.RequestedApiVersion?.ToString();
-        
         return CreatedAtAction(nameof(GetRecipientById), new { version, id = recipient.Id }, recipient);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(RecipientDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<RecipientDto>> UpdateRecipient(Guid id, [FromBody] UpdateRecipientDto updateRecipientDto, CancellationToken cancellationToken)
+    {
+        var recipient = await recipientService.UpdateRecipientAsync(id, updateRecipientDto, cancellationToken);
+        return Ok(recipient);
     }
 }

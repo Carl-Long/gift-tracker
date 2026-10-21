@@ -56,13 +56,30 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return new RecipientDto(
-            recipient.Id,
-            recipient.Name,
-            recipient.Description,
-            recipient.BirthDate,
-            recipient.Relationship,
-            recipient.IsArchived);
+        return RecipientMapper.ToRecipientDto(recipient);
     }
 
+
+    public async Task<RecipientDto> UpdateRecipientAsync(Guid recipientId, UpdateRecipientDto updateRecipientDto, CancellationToken cancellationToken = default)
+    {
+        var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
+
+        var recipient = await dbContext.Recipients
+            .SingleOrDefaultAsync(recipient => recipient.Id == recipientId && recipient.UserId == userId, cancellationToken);
+
+        if (recipient is null)
+        {
+            throw new NotFoundException("Recipient not found.");
+        }
+
+        recipient.UpdateDetails(
+            updateRecipientDto.Name,
+            updateRecipientDto.Description,
+            updateRecipientDto.BirthDate,
+            updateRecipientDto.Relationship);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return RecipientMapper.ToRecipientDto(recipient);
+    }
 }
