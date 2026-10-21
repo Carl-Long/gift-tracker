@@ -8,54 +8,58 @@ public static class ApiDocumentationExtensions
 {
     public static IServiceCollection AddApiDocumentation(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOpenApi(options =>
-        {
-            options.AddDocumentTransformer((document, _, _) =>
+        services
+            .AddApiVersioningConfiguration()
+            .AddOpenApi(options =>
             {
-                var authority = configuration["Authentication:Authority"]
-                                ?? throw new InvalidOperationException("Authentication authority is not configured.");
-
-                document.Components ??= new OpenApiComponents();
-                document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-
-                document.Components.SecuritySchemes["OAuth2"] = new OpenApiSecurityScheme
+                options.Document.AddDocumentTransformer((document, _, _) =>
                 {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows
+                    var authority = configuration["Authentication:Authority"]
+                                    ?? throw new InvalidOperationException(
+                                        "Authentication authority is not configured.");
+
+                    document.Components ??= new OpenApiComponents();
+
+                    document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+                    document.Components.SecuritySchemes["OAuth2"] = new OpenApiSecurityScheme
                     {
-                        AuthorizationCode = new OpenApiOAuthFlow
+                        Type = SecuritySchemeType.OAuth2,
+                        Flows = new OpenApiOAuthFlows
                         {
-                            AuthorizationUrl = new Uri($"{authority}/protocol/openid-connect/auth"),
-                            TokenUrl = new Uri($"{authority}/protocol/openid-connect/token"),
-                            Scopes = new Dictionary<string, string> { ["openid"] = "OpenID Connect" }
+                            AuthorizationCode = new OpenApiOAuthFlow
+                            {
+                                AuthorizationUrl = new Uri($"{authority}/protocol/openid-connect/auth"),
+                                TokenUrl = new Uri($"{authority}/protocol/openid-connect/token"),
+                                Scopes = new Dictionary<string, string> { ["openid"] = "OpenID Connect" }
+                            }
                         }
-                    }
-                };
+                    };
 
-                return Task.CompletedTask;
-            });
+                    return Task.CompletedTask;
+                });
 
-            options.AddOperationTransformer((operation, context, _) =>
-            {
-                var metadata = context.Description.ActionDescriptor.EndpointMetadata;
-
-                var requiresAuthorization = metadata.OfType<IAuthorizeData>().Any();
-
-                var allowsAnonymous = metadata.OfType<IAllowAnonymous>().Any();
-
-                if (requiresAuthorization && !allowsAnonymous)
+                options.Document.AddOperationTransformer((operation, context, _) =>
                 {
-                    operation.Security ??= [];
+                    var metadata = context.Description.ActionDescriptor.EndpointMetadata;
 
-                    operation.Security.Add(new OpenApiSecurityRequirement
+                    var requiresAuthorization = metadata.OfType<IAuthorizeData>().Any();
+
+                    var allowsAnonymous = metadata.OfType<IAllowAnonymous>().Any();
+
+                    if (requiresAuthorization && !allowsAnonymous)
                     {
-                        [new OpenApiSecuritySchemeReference("OAuth2", context.Document)] = []
-                    });
-                }
+                        operation.Security ??= [];
 
-                return Task.CompletedTask;
+                        operation.Security.Add(new OpenApiSecurityRequirement
+                        {
+                            [new OpenApiSecuritySchemeReference("OAuth2", context.Document)] = []
+                        });
+                    }
+
+                    return Task.CompletedTask;
+                });
             });
-        });
 
         return services;
     }
@@ -68,17 +72,27 @@ public static class ApiDocumentationExtensions
         var redirectUri = app.Configuration["ApiDocumentation:Scalar:RedirectUri"]
                           ?? throw new InvalidOperationException("Scalar redirect URI is not configured.");
 
-        app.MapOpenApi();
+        app.MapOpenApi().WithDocumentPerVersion();
 
-        app.MapScalarApiReference(options => options
-            .AddPreferredSecuritySchemes("OAuth2")
-            .AddAuthorizationCodeFlow("OAuth2", flow =>
+        app.MapScalarApiReference(options =>
+        {
+            var versions = app.DescribeApiVersions();
+
+            for (var i = 0; i < versions.Count; i++)
             {
-                flow.ClientId = clientId;
-                flow.RedirectUri = redirectUri;
-                flow.Pkce = Pkce.Sha256;
-                flow.SelectedScopes = ["openid"];
-            }));
+                var version = versions[i];
+                options.AddDocument(version.GroupName, version.GroupName, isDefault: i == versions.Count - 1);
+            }
+
+            options.AddPreferredSecuritySchemes("OAuth2")
+                .AddAuthorizationCodeFlow("OAuth2", flow =>
+                {
+                    flow.ClientId = clientId;
+                    flow.RedirectUri = redirectUri;
+                    flow.Pkce = Pkce.Sha256;
+                    flow.SelectedScopes = ["openid"];
+                });
+        });
 
         return app;
     }

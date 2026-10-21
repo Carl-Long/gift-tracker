@@ -10,15 +10,15 @@ Authorization: Bearer {{$auth.token("keycloak")}}
 Accept: application/json
 
 ### Get active recipients
-GET {{host}}/api/recipients
+GET {{host}}/api/v1/recipients
 Authorization: Bearer {{$auth.token("keycloak")}}
 Accept: application/json
 
 ### Get all recipients, including archived
-GET {{host}}/api/recipients?includeArchived=true
+GET {{host}}/api/v1/recipients?includeArchived=true
 Authorization: Bearer {{$auth.token("keycloak")}}
 Accept: application/json
 
 ### Get recipients without authentication
-GET {{host}}/api/recipients
+GET {{host}}/api/v1/recipients
 Accept: application/json
