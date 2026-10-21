@@ -1,3 +1,4 @@
+using GiftTracker.Application.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,11 +7,13 @@ namespace GiftTracker.Api.Controllers;
 [ApiController]
 [Route("api/auth-test")]
 [Authorize]
-public class AuthTestController : ControllerBase
+public class AuthTestController(IUserResolutionService userResolutionService) : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        return Ok(new { Message = "Authenticated successfully", SubjectId = User.FindFirst("sub")?.Value });
+        var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
+
+        return Ok(new { Message = "Authenticated successfully", UserId = userId });
     }
 }

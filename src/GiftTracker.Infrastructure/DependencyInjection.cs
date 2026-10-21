@@ -1,3 +1,4 @@
+using GiftTracker.Application.Abstractions.Persistence;
 using GiftTracker.Infrastructure.Persistence;
 using GiftTracker.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,11 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString);
             options.AddInterceptors(serviceProvider.GetRequiredService<AuditingInterceptor>());
         });
+
+        // Register this way because we want both types to resolve to the same scoped DbContext instance.
+        // If we registered the interface independently using AddScoped<IGiftTrackerDbContext, GiftTrackerDbContext>(),
+        // we could end up with two separately constructed contexts in the same request.
+        services.AddScoped<IGiftTrackerDbContext>(serviceProvider => serviceProvider.GetRequiredService<GiftTrackerDbContext>());
 
         return services;
     }

@@ -1,3 +1,5 @@
+using GiftTracker.Api.Authentication;
+using GiftTracker.Application.Abstractions.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace GiftTracker.Api.Extensions;
@@ -21,6 +23,9 @@ public static class AuthenticationExtensions
                 options.RequireHttpsMetadata = !environment.IsDevelopment();
                 options.MapInboundClaims = false;
             });
+
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, HttpCurrentUser>();
 
         services.AddAuthorization();
 
