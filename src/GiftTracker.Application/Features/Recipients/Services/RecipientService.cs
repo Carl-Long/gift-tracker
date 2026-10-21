@@ -1,4 +1,5 @@
 using GiftTracker.Application.Abstractions.Persistence;
+using GiftTracker.Application.Common.Exceptions;
 using GiftTracker.Application.Features.Recipients.Dtos;
 using GiftTracker.Application.Features.Recipients.Mapping;
 using GiftTracker.Application.Features.Users;
@@ -23,5 +24,19 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         return await query.OrderBy(recipient => recipient.Name)
             .Select(RecipientProjections.ToRecipientDto)
             .ToListAsync(cancellationToken);
+    }
+
+
+    public async Task<RecipientDto> GetRecipientByIdAsync(Guid recipientId, CancellationToken cancellationToken = default)
+    {
+        var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
+
+        var recipient = await dbContext.Recipients
+            .AsNoTracking()
+            .Where(recipient => recipient.Id == recipientId && recipient.UserId == userId)
+            .Select(RecipientProjections.ToRecipientDto)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        return recipient ?? throw new NotFoundException("Recipient not found.");
     }
 }

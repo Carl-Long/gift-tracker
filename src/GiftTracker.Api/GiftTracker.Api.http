@@ -22,3 +22,8 @@ Accept: application/json
 ### Get recipients without authentication
 GET {{host}}/api/v1/recipients
 Accept: application/json
+
+### Get recipient by ID
+GET {{host}}/api/v1/recipients/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json

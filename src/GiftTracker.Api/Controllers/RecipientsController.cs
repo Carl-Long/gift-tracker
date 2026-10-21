@@ -19,4 +19,13 @@ public class RecipientsController(IRecipientService recipientService) : Controll
         var recipients = await recipientService.GetRecipientsAsync(includeArchived, cancellationToken);
         return Ok(recipients);
     }
+
+    [HttpGet("{id:guid}", Name = nameof(GetRecipientById))]
+    [ProducesResponseType(typeof(RecipientDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<RecipientDto>> GetRecipientById(Guid id, CancellationToken cancellationToken)
+    {
+        var recipient = await recipientService.GetRecipientByIdAsync(id, cancellationToken);
+        return Ok(recipient);
+    }
 }
