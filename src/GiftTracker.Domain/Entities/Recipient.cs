@@ -9,11 +9,13 @@ public class Recipient : AuditableEntity
     public const int MaxDescriptionLength = 500;
 
     public Guid UserId { get; private set; }
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; } =  string.Empty;
     public string? Description { get; private set; }
     public DateOnly? BirthDate { get; private set; }
     public RecipientRelationship? Relationship { get; private set; }
     public bool IsArchived { get; private set; }
+
+    private Recipient() { } // For EF core
 
     public Recipient(Guid userId, string name, string? description, DateOnly? birthDate, RecipientRelationship? relationship)
     {
@@ -22,7 +24,6 @@ public class Recipient : AuditableEntity
             throw new ArgumentException("A valid user ID is required.", nameof(userId));
         }
 
-        Id = Guid.NewGuid();
         UserId = userId;
 
         UpdateDetails(name, description, birthDate, relationship);

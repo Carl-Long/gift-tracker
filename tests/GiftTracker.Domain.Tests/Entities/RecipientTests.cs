@@ -17,7 +17,6 @@ public class RecipientTests
         var recipient = new Recipient(userId, "Mum", "Christmas and birthday gifts", birthDate, RecipientRelationship.ImmediateFamily);
 
         // Assert
-        Assert.NotEqual(Guid.Empty, recipient.Id);
         Assert.Equal(userId, recipient.UserId);
         Assert.Equal("Mum", recipient.Name);
         Assert.Equal("Christmas and birthday gifts", recipient.Description);
