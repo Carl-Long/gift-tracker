@@ -1,21 +1,24 @@
+using GiftTracker.Api.Extensions;
 using GiftTracker.Infrastructure;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddApiDocumentation(builder.Configuration);
+builder.Services.AddApiAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapApiDocumentation();
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

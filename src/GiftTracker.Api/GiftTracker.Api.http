@@ -1,6 +1,10 @@
 @host = https://localhost:7000
 
-GET {{host}}/openapi/v1.json
+### Test without authentication
+GET {{host}}/api/auth-test
 Accept: application/json
 
-###
+### Test with Keycloak authentication
+GET {{host}}/api/auth-test
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
