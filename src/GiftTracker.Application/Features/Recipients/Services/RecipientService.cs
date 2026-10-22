@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GiftTracker.Application.Features.Recipients.Services;
 
-public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResolutionService userResolutionService) : IRecipientService
+public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResolutionService userResolutionService)
+    : IRecipientService
 {
-    public async Task<IReadOnlyList<RecipientDto>> GetRecipientsAsync(bool includeArchived = false, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<RecipientDto>> GetRecipientsAsync(
+        bool includeArchived = false,
+        CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
 
@@ -26,12 +29,13 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<RecipientDto> GetRecipientByIdAsync(Guid recipientId, CancellationToken cancellationToken = default)
+    public async Task<RecipientDto> GetRecipientByIdAsync(
+        Guid recipientId,
+        CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
 
-        var recipient = await dbContext.Recipients
-            .AsNoTracking()
+        var recipient = await dbContext.Recipients.AsNoTracking()
             .Where(recipient => recipient.Id == recipientId && recipient.UserId == userId)
             .Select(RecipientProjections.ToRecipientDto)
             .SingleOrDefaultAsync(cancellationToken);
@@ -39,7 +43,9 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         return recipient ?? throw new NotFoundException("Recipient not found.");
     }
 
-    public async Task<RecipientDto> CreateRecipientAsync(CreateRecipientDto createRecipientDto, CancellationToken cancellationToken = default)
+    public async Task<RecipientDto> CreateRecipientAsync(
+        CreateRecipientDto createRecipientDto,
+        CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
 
@@ -57,12 +63,16 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         return RecipientMapper.ToRecipientDto(recipient);
     }
 
-    public async Task<RecipientDto> UpdateRecipientAsync(Guid recipientId, UpdateRecipientDto updateRecipientDto, CancellationToken cancellationToken = default)
+    public async Task<RecipientDto> UpdateRecipientAsync(
+        Guid recipientId,
+        UpdateRecipientDto updateRecipientDto,
+        CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
 
-        var recipient = await dbContext.Recipients
-            .SingleOrDefaultAsync(recipient => recipient.Id == recipientId && recipient.UserId == userId, cancellationToken);
+        var recipient = await dbContext.Recipients.SingleOrDefaultAsync(
+            recipient => recipient.Id == recipientId && recipient.UserId == userId,
+            cancellationToken);
 
         if (recipient is null)
         {
@@ -80,12 +90,16 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         return RecipientMapper.ToRecipientDto(recipient);
     }
 
-    public async Task SetRecipientArchivedStatusAsync(Guid recipientId, bool isArchived, CancellationToken cancellationToken = default)
+    public async Task SetRecipientArchivedStatusAsync(
+        Guid recipientId,
+        bool isArchived,
+        CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
 
-        var recipient = await dbContext.Recipients
-            .SingleOrDefaultAsync(recipient => recipient.Id == recipientId && recipient.UserId == userId, cancellationToken);
+        var recipient = await dbContext.Recipients.SingleOrDefaultAsync(
+            recipient => recipient.Id == recipientId && recipient.UserId == userId,
+            cancellationToken);
 
         if (recipient is null)
         {
@@ -104,13 +118,14 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    // For now, allow any delete, in future, will not allow delete if recipient has any occasions/gift history
+    // For now, allow any delete, in future, will not allow to delete if recipient has any occasions/gift history?
     public async Task DeleteRecipientAsync(Guid recipientId, CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
 
-        var recipient = await dbContext.Recipients
-            .SingleOrDefaultAsync(recipient => recipient.Id == recipientId && recipient.UserId == userId, cancellationToken);
+        var recipient = await dbContext.Recipients.SingleOrDefaultAsync(
+            recipient => recipient.Id == recipientId && recipient.UserId == userId,
+            cancellationToken);
 
         if (recipient is null)
         {
