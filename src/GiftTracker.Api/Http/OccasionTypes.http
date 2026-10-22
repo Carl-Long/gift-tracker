@@ -1,0 +1,87 @@
+@host = https://localhost:7000
+@occasionTypeId = 221c2710-0469-4670-4ad7-08df302e4747
+
+### Get occasion types
+GET {{host}}/api/v1.0/occasion-types
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occasion types including archived
+GET {{host}}/api/v1.0/occasion-types?includeArchived=true
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occasion types while not authorised
+GET {{host}}/api/v1.0/occasion-types
+Accept: application/json
+
+
+### Get occasion type by id
+GET {{host}}/api/v1.0/occasion-types/{{occasionTypeId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occastion type by id with non existing id
+GET {{host}}/api/v1.0/occasion-types/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occasion type by id without auth
+GET {{host}}/api/v1.0/occasion-types/{{occasionTypeId}}
+Accept: application/json
+
+### Create occasion type
+POST {{host}}/api/v1/occasion-types
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Holiday",
+  "description": "Celebrated holidays like Christmas, Easter, Diwali etc..."
+}
+
+### Update occasion type
+PUT {{host}}/api/v1/occasion-types/{{occasionTypeId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Holiday - updated",
+  "description": "Updated description - Celebrated holidays like Christmas, Easter, Diwali etc..."
+}
+
+### Archive occasion type
+PATCH {{host}}/api/v1/occasion-types/{{occasionTypeId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isArchived": true
+}
+
+### Restore occasion type
+PATCH {{host}}/api/v1/occasion-types/{{occasionTypeId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isArchived": false
+}
+
+### Archive occasion type with empty dto
+PATCH {{host}}/api/v1/occasion-types/{{occasionTypeId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+### Delete occasion type
+DELETE {{host}}/api/v1/occasion-types/{{occasionTypeId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
