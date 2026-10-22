@@ -1,0 +1,93 @@
+@host = https://localhost:7000
+@recipientId = ff14d147-cbc1-4205-15bd-08df2f8d50ed
+
+### Get recipients
+GET {{host}}/api/v1/recipients
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get recipients including archived
+GET {{host}}/api/v1/recipients?includeArchived=true
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get recipient by ID
+GET {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Create recipient
+POST {{host}}/api/v1/recipients
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Mum",
+  "description": "Christmas and birthday gifts",
+  "birthDate": "1970-05-15",
+  "relationship": "ImmediateFamily"
+}
+
+### Update recipient
+PUT {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Mum",
+  "description": "Updated gift preferences updated",
+  "birthDate": "1970-05-15",
+  "relationship": "ImmediateFamily"
+}
+
+### Archive recipient
+PATCH {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{
+  "isArchived": true
+}
+
+### Restore recipient
+PATCH {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{
+  "isArchived": false
+}
+
+### Delete recipient
+DELETE {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+
+### Get recipient - Not found
+GET {{host}}/api/v1/recipients/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Create recipient - Invalid name
+POST {{host}}/api/v1/recipients
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "   "
+}
+
+### Update archive status - Missing field
+PATCH {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{}
+
+### Delete recipient - Not found
+DELETE {{host}}/api/v1/recipients/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+

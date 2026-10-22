@@ -1,19 +1,39 @@
-using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
+using GiftTracker.Api.ExceptionHandling;
+using GiftTracker.Api.Extensions;
+using GiftTracker.Application;
+using GiftTracker.Domain.Enums;
+using GiftTracker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter<RecipientRelationship>(allowIntegerValues: false));
+    });
+
+builder.Services.AddApiDocumentation(builder.Configuration);
+builder.Services.AddApiAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(new ExceptionHandlerOptions { AllowStatusCode404Response = true });
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapApiDocumentation();
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
