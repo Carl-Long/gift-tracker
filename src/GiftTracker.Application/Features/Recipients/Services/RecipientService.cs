@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GiftTracker.Application.Features.Recipients.Services;
 
-public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResolutionService userResolutionService)
-    : IRecipientService
+public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResolutionService userResolutionService) : IRecipientService
 {
     public async Task<IReadOnlyList<RecipientDto>> GetRecipientsAsync(bool includeArchived = false, CancellationToken cancellationToken = default)
     {
@@ -40,7 +39,6 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         return recipient ?? throw new NotFoundException("Recipient not found.");
     }
 
-
     public async Task<RecipientDto> CreateRecipientAsync(CreateRecipientDto createRecipientDto, CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
@@ -58,7 +56,6 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
 
         return RecipientMapper.ToRecipientDto(recipient);
     }
-
 
     public async Task<RecipientDto> UpdateRecipientAsync(Guid recipientId, UpdateRecipientDto updateRecipientDto, CancellationToken cancellationToken = default)
     {
@@ -83,7 +80,6 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         return RecipientMapper.ToRecipientDto(recipient);
     }
 
-
     public async Task SetRecipientArchivedStatusAsync(Guid recipientId, bool isArchived, CancellationToken cancellationToken = default)
     {
         var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
@@ -104,6 +100,24 @@ public sealed class RecipientService(IGiftTrackerDbContext dbContext, IUserResol
         {
             recipient.Restore();
         }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    // For now, allow any delete, in future, will not allow delete if recipient has any occasions/gift history
+    public async Task DeleteRecipientAsync(Guid recipientId, CancellationToken cancellationToken = default)
+    {
+        var userId = await userResolutionService.GetOrCreateUserIdAsync(cancellationToken);
+
+        var recipient = await dbContext.Recipients
+            .SingleOrDefaultAsync(recipient => recipient.Id == recipientId && recipient.UserId == userId, cancellationToken);
+
+        if (recipient is null)
+        {
+            throw new NotFoundException("Recipient not found.");
+        }
+
+        dbContext.Recipients.Remove(recipient);
 
         await dbContext.SaveChangesAsync(cancellationToken);
     }

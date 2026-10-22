@@ -60,4 +60,13 @@ public class RecipientsController(IRecipientService recipientService) : Controll
         await recipientService.SetRecipientArchivedStatusAsync(id, updateRecipientArchiveStatusDto.IsArchived, cancellationToken);
         return NoContent();
     }
+    
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteRecipient(Guid id, CancellationToken cancellationToken)
+    {
+        await recipientService.DeleteRecipientAsync(id, cancellationToken);
+        return NoContent();
+    }
 }

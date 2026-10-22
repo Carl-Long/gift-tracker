@@ -42,7 +42,6 @@ Accept: application/json
     "relationship": "ImmediateFamily"
 }
 
-
 ### Archive recipient
 PATCH {{host}}/api/v1/recipients/{{recipientId}}
 Authorization: Bearer {{$auth.token("keycloak")}}
@@ -60,6 +59,10 @@ Content-Type: application/json
 {
     "isArchived": false
 }
+
+### Delete recipient
+DELETE {{host}}/api/v1/recipients/{{recipientId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
 
 ### Get recipient - Not found
 GET {{host}}/api/v1/recipients/00000000-0000-0000-0000-000000000001
@@ -82,4 +85,9 @@ Authorization: Bearer {{$auth.token("keycloak")}}
 Content-Type: application/json
 
 {}
+
+### Delete recipient - Not found
+DELETE {{host}}/api/v1/recipients/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
 

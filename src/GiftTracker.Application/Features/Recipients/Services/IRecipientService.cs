@@ -9,4 +9,5 @@ public interface IRecipientService
     Task<RecipientDto> CreateRecipientAsync(CreateRecipientDto createRecipientDto, CancellationToken cancellationToken = default);
     Task<RecipientDto> UpdateRecipientAsync(Guid recipientId, UpdateRecipientDto dto, CancellationToken cancellationToken = default);
     Task SetRecipientArchivedStatusAsync(Guid recipientId, bool isArchived, CancellationToken cancellationToken = default);
+    Task DeleteRecipientAsync(Guid recipientId, CancellationToken cancellationToken = default);
 }
