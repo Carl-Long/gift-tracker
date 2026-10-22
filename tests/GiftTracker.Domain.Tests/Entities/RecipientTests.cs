@@ -42,8 +42,7 @@ public class RecipientTests
     [InlineData("")]
     [InlineData(" ")]
     [InlineData("   ")]
-    public void UpdateDetails_WithInvalidName_ThrowsArgumentException(
-        string name)
+    public void UpdateDetails_WithInvalidName_ThrowsArgumentException(string name)
     {
         // Arrange
         var recipient = CreateRecipient();
@@ -122,6 +121,33 @@ public class RecipientTests
         // Arrange
         var recipient = CreateRecipient();
         recipient.Archive();
+
+        // Act
+        recipient.Restore();
+
+        // Assert
+        Assert.False(recipient.IsArchived);
+    }
+
+    [Fact]
+    public void Archive_WhenAlreadyArchived_RemainsArchived()
+    {
+        // Arrange
+        var recipient = new Recipient(Guid.NewGuid(), "Mum", null, null, null);
+        recipient.Archive();
+
+        // Act
+        recipient.Archive();
+
+        // Assert
+        Assert.True(recipient.IsArchived);
+    }
+
+    [Fact]
+    public void Restore_WhenAlreadyActive_RemainsActive()
+    {
+        // Arrange
+        var recipient = new Recipient(Guid.NewGuid(), "Mum", null, null, null);
 
         // Act
         recipient.Restore();
