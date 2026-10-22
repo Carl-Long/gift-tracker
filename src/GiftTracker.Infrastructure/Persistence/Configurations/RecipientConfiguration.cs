@@ -12,16 +12,10 @@ public class RecipientConfiguration : IEntityTypeConfiguration<Recipient>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Name)
-            .IsRequired()
-            .HasMaxLength(Recipient.MaxNameLength);
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(Recipient.MaxNameLength);
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(Recipient.MaxDescriptionLength);
+        builder.Property(x => x.Description).HasMaxLength(Recipient.MaxDescriptionLength);
 
-        builder.HasOne<User>()
-            .WithMany()
-            .HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne<User>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
     }
 }

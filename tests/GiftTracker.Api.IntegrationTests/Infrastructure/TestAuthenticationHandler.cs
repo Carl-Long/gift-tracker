@@ -10,8 +10,7 @@ namespace GiftTracker.Api.IntegrationTests.Infrastructure;
 public sealed class TestAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
-    UrlEncoder encoder)
-    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    UrlEncoder encoder) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     public const string SchemeName = "Test";
 
@@ -21,9 +20,9 @@ public sealed class TestAuthenticationHandler(
     {
         var authorization = Request.Headers.Authorization.ToString();
 
-        if (!AuthenticationHeaderValue.TryParse(authorization, out var header)
-            || header.Scheme != SchemeName
-            || string.IsNullOrWhiteSpace(header.Parameter))
+        if (!AuthenticationHeaderValue.TryParse(authorization, out var header) ||
+            header.Scheme != SchemeName ||
+            string.IsNullOrWhiteSpace(header.Parameter))
         {
             return Task.FromResult(AuthenticateResult.NoResult());
         }

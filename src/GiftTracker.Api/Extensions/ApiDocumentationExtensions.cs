@@ -8,15 +8,13 @@ public static class ApiDocumentationExtensions
 {
     public static IServiceCollection AddApiDocumentation(this IServiceCollection services, IConfiguration configuration)
     {
-        services
-            .AddApiVersioningConfiguration()
+        services.AddApiVersioningConfiguration()
             .AddOpenApi(options =>
             {
                 options.Document.AddDocumentTransformer((document, _, _) =>
                 {
-                    var authority = configuration["Authentication:Authority"]
-                                    ?? throw new InvalidOperationException(
-                                        "Authentication authority is not configured.");
+                    var authority = configuration["Authentication:Authority"] ??
+                                    throw new InvalidOperationException("Authentication authority is not configured.");
 
                     document.Components ??= new OpenApiComponents();
 
@@ -51,10 +49,11 @@ public static class ApiDocumentationExtensions
                     {
                         operation.Security ??= [];
 
-                        operation.Security.Add(new OpenApiSecurityRequirement
-                        {
-                            [new OpenApiSecuritySchemeReference("OAuth2", context.Document)] = []
-                        });
+                        operation.Security.Add(
+                            new OpenApiSecurityRequirement
+                            {
+                                [new OpenApiSecuritySchemeReference("OAuth2", context.Document)] = []
+                            });
                     }
 
                     return Task.CompletedTask;
@@ -66,11 +65,11 @@ public static class ApiDocumentationExtensions
 
     public static WebApplication MapApiDocumentation(this WebApplication app)
     {
-        var clientId = app.Configuration["ApiDocumentation:Scalar:ClientId"]
-                       ?? throw new InvalidOperationException("Scalar client ID is not configured.");
+        var clientId = app.Configuration["ApiDocumentation:Scalar:ClientId"] ??
+                       throw new InvalidOperationException("Scalar client ID is not configured.");
 
-        var redirectUri = app.Configuration["ApiDocumentation:Scalar:RedirectUri"]
-                          ?? throw new InvalidOperationException("Scalar redirect URI is not configured.");
+        var redirectUri = app.Configuration["ApiDocumentation:Scalar:RedirectUri"] ??
+                          throw new InvalidOperationException("Scalar redirect URI is not configured.");
 
         app.MapOpenApi().WithDocumentPerVersion();
 
@@ -85,13 +84,15 @@ public static class ApiDocumentationExtensions
             }
 
             options.AddPreferredSecuritySchemes("OAuth2")
-                .AddAuthorizationCodeFlow("OAuth2", flow =>
-                {
-                    flow.ClientId = clientId;
-                    flow.RedirectUri = redirectUri;
-                    flow.Pkce = Pkce.Sha256;
-                    flow.SelectedScopes = ["openid"];
-                });
+                .AddAuthorizationCodeFlow(
+                    "OAuth2",
+                    flow =>
+                    {
+                        flow.ClientId = clientId;
+                        flow.RedirectUri = redirectUri;
+                        flow.Pkce = Pkce.Sha256;
+                        flow.SelectedScopes = ["openid"];
+                    });
         });
 
         return app;

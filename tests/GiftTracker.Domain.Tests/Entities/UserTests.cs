@@ -1,4 +1,3 @@
-
 using GiftTracker.Domain.Entities;
 
 namespace GiftTracker.Domain.Tests.Entities;

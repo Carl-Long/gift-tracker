@@ -9,7 +9,7 @@ public class Recipient : AuditableEntity
     public const int MaxDescriptionLength = 500;
 
     public Guid UserId { get; private set; }
-    public string Name { get; private set; } =  string.Empty;
+    public string Name { get; private set; } = string.Empty;
     public string? Description { get; private set; }
     public DateOnly? BirthDate { get; private set; }
     public RecipientRelationship? Relationship { get; private set; }
@@ -17,7 +17,12 @@ public class Recipient : AuditableEntity
 
     private Recipient() { } // For EF core
 
-    public Recipient(Guid userId, string name, string? description, DateOnly? birthDate, RecipientRelationship? relationship)
+    public Recipient(
+        Guid userId,
+        string name,
+        string? description,
+        DateOnly? birthDate,
+        RecipientRelationship? relationship)
     {
         if (userId == Guid.Empty)
         {
@@ -29,7 +34,11 @@ public class Recipient : AuditableEntity
         UpdateDetails(name, description, birthDate, relationship);
     }
 
-    public void UpdateDetails(string name, string? description, DateOnly? birthDate, RecipientRelationship? relationship)
+    public void UpdateDetails(
+        string name,
+        string? description,
+        DateOnly? birthDate,
+        RecipientRelationship? relationship)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -47,7 +56,9 @@ public class Recipient : AuditableEntity
 
         if (trimmedDescription?.Length > MaxDescriptionLength)
         {
-            throw new ArgumentException($"Description cannot exceed {MaxDescriptionLength} characters.", nameof(description));
+            throw new ArgumentException(
+                $"Description cannot exceed {MaxDescriptionLength} characters.",
+                nameof(description));
         }
 
         if (relationship.HasValue && !Enum.IsDefined(relationship.Value))

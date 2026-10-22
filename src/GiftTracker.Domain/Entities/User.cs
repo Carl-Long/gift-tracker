@@ -29,12 +29,16 @@ public class User : BaseEntity
 
         if (trimmedIdentityProvider.Length > MaxIdentityProviderLength)
         {
-            throw new ArgumentException($"Identity provider cannot exceed {MaxIdentityProviderLength} characters.", nameof(identityProvider));
+            throw new ArgumentException(
+                $"Identity provider cannot exceed {MaxIdentityProviderLength} characters.",
+                nameof(identityProvider));
         }
 
         if (trimmedExternalSubjectId.Length > MaxExternalSubjectIdLength)
         {
-            throw new ArgumentException($"External subject ID cannot exceed {MaxExternalSubjectIdLength} characters.", nameof(externalSubjectId));
+            throw new ArgumentException(
+                $"External subject ID cannot exceed {MaxExternalSubjectIdLength} characters.",
+                nameof(externalSubjectId));
         }
 
         IdentityProvider = trimmedIdentityProvider;

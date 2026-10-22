@@ -255,7 +255,8 @@ public sealed class RecipientsApiTests(ApiTestFixture fixture) : IClassFixture<A
         if (userId is not null)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                TestAuthenticationHandler.SchemeName, userId);
+                TestAuthenticationHandler.SchemeName,
+                userId);
         }
 
         return client;

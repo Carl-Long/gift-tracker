@@ -7,8 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GiftTracker.Api.IntegrationTests.Infrastructure;
 
-public sealed class GiftTrackerApiFactory(string connectionString)
-    : WebApplicationFactory<Program>
+public sealed class GiftTrackerApiFactory(string connectionString) : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -28,9 +27,9 @@ public sealed class GiftTrackerApiFactory(string connectionString)
                     options.DefaultAuthenticateScheme = TestAuthenticationHandler.SchemeName;
                     options.DefaultChallengeScheme = TestAuthenticationHandler.SchemeName;
                 })
-                .AddScheme<
-                    AuthenticationSchemeOptions,
-                    TestAuthenticationHandler>(TestAuthenticationHandler.SchemeName, _ => { });
+                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                    TestAuthenticationHandler.SchemeName,
+                    _ => { });
         });
     }
 }

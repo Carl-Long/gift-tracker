@@ -1,4 +1,3 @@
-
 using GiftTracker.Domain.Entities;
 using GiftTracker.Domain.Enums;
 
@@ -14,7 +13,12 @@ public class RecipientTests
         var birthDate = new DateOnly(1970, 5, 15);
 
         // Act
-        var recipient = new Recipient(userId, "Mum", "Christmas and birthday gifts", birthDate, RecipientRelationship.ImmediateFamily);
+        var recipient = new Recipient(
+            userId,
+            "Mum",
+            "Christmas and birthday gifts",
+            birthDate,
+            RecipientRelationship.ImmediateFamily);
 
         // Assert
         Assert.Equal(userId, recipient.UserId);
@@ -32,8 +36,7 @@ public class RecipientTests
         var userId = Guid.Empty;
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() =>
-            new Recipient(userId, "Mum", null, null, null));
+        var exception = Assert.Throws<ArgumentException>(() => new Recipient(userId, "Mum", null, null, null));
 
         Assert.Equal(nameof(userId), exception.ParamName);
     }
@@ -48,8 +51,7 @@ public class RecipientTests
         var recipient = CreateRecipient();
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() =>
-            recipient.UpdateDetails(name, null, null, null));
+        var exception = Assert.Throws<ArgumentException>(() => recipient.UpdateDetails(name, null, null, null));
 
         Assert.Equal(nameof(name), exception.ParamName);
     }
@@ -62,8 +64,7 @@ public class RecipientTests
         var name = new string('A', Recipient.MaxNameLength + 1);
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() =>
-            recipient.UpdateDetails(name, null, null, null));
+        var exception = Assert.Throws<ArgumentException>(() => recipient.UpdateDetails(name, null, null, null));
 
         Assert.Equal(nameof(name), exception.ParamName);
     }

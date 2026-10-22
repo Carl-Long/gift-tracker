@@ -377,7 +377,8 @@ public sealed class RecipientServiceTests : IDisposable
         var service = CreateService(userId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => service.SetRecipientArchivedStatusAsync(Guid.NewGuid(), true));
+        await Assert.ThrowsAsync<NotFoundException>(() =>
+            service.SetRecipientArchivedStatusAsync(Guid.NewGuid(), true));
     }
 
     // DELETE

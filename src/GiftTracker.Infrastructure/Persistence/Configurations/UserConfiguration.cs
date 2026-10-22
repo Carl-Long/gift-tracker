@@ -12,15 +12,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.IdentityProvider)
-            .IsRequired()
-            .HasMaxLength(User.MaxIdentityProviderLength);
+        builder.Property(x => x.IdentityProvider).IsRequired().HasMaxLength(User.MaxIdentityProviderLength);
 
-        builder.Property(x => x.ExternalSubjectId)
-            .IsRequired()
-            .HasMaxLength(User.MaxExternalSubjectIdLength);
+        builder.Property(x => x.ExternalSubjectId).IsRequired().HasMaxLength(User.MaxExternalSubjectIdLength);
 
-        builder.HasIndex(x => new { x.IdentityProvider, x.ExternalSubjectId })
-            .IsUnique();
+        builder.HasIndex(x => new { x.IdentityProvider, x.ExternalSubjectId }).IsUnique();
     }
 }

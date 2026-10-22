@@ -17,8 +17,9 @@ public static class DependencyInjection
 
         services.AddDbContext<GiftTrackerDbContext>((serviceProvider, options) =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection")
-                                   ?? throw new InvalidOperationException("Database connection string 'DefaultConnection' is not configured.");
+            var connectionString = configuration.GetConnectionString("DefaultConnection") ??
+                                   throw new InvalidOperationException(
+                                       "Database connection string 'DefaultConnection' is not configured.");
 
             options.UseSqlServer(connectionString);
             options.AddInterceptors(serviceProvider.GetRequiredService<AuditingInterceptor>());
@@ -27,7 +28,8 @@ public static class DependencyInjection
         // Register this way because we want both types to resolve to the same scoped DbContext instance.
         // If we registered the interface independently using AddScoped<IGiftTrackerDbContext, GiftTrackerDbContext>(),
         // we could end up with two separately constructed contexts in the same request.
-        services.AddScoped<IGiftTrackerDbContext>(serviceProvider => serviceProvider.GetRequiredService<GiftTrackerDbContext>());
+        services.AddScoped<IGiftTrackerDbContext>(serviceProvider =>
+            serviceProvider.GetRequiredService<GiftTrackerDbContext>());
 
         return services;
     }

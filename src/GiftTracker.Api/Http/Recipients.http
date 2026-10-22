@@ -23,10 +23,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "Mum",
-    "description": "Christmas and birthday gifts",
-    "birthDate": "1970-05-15",
-    "relationship": "ImmediateFamily"
+  "name": "Mum",
+  "description": "Christmas and birthday gifts",
+  "birthDate": "1970-05-15",
+  "relationship": "ImmediateFamily"
 }
 
 ### Update recipient
@@ -36,10 +36,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "Mum",
-    "description": "Updated gift preferences updated",
-    "birthDate": "1970-05-15",
-    "relationship": "ImmediateFamily"
+  "name": "Mum",
+  "description": "Updated gift preferences updated",
+  "birthDate": "1970-05-15",
+  "relationship": "ImmediateFamily"
 }
 
 ### Archive recipient
@@ -48,7 +48,7 @@ Authorization: Bearer {{$auth.token("keycloak")}}
 Content-Type: application/json
 
 {
-    "isArchived": true
+  "isArchived": true
 }
 
 ### Restore recipient
@@ -57,7 +57,7 @@ Authorization: Bearer {{$auth.token("keycloak")}}
 Content-Type: application/json
 
 {
-    "isArchived": false
+  "isArchived": false
 }
 
 ### Delete recipient
@@ -76,7 +76,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "   "
+  "name": "   "
 }
 
 ### Update archive status - Missing field

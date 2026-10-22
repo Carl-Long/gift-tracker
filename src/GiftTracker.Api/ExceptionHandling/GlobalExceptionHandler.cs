@@ -6,7 +6,10 @@ namespace GiftTracker.Api.ExceptionHandling;
 
 public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken)
     {
         if (exception is not NotFoundException)
         {
@@ -22,12 +25,13 @@ public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetails
             Detail = exception.Message
         };
 
-        var written = await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
-        {
-            HttpContext = httpContext,
-            Exception = exception,
-            ProblemDetails = problemDetails
-        });
+        var written = await problemDetailsService.TryWriteAsync(
+            new ProblemDetailsContext
+            {
+                HttpContext = httpContext,
+                Exception = exception,
+                ProblemDetails = problemDetails
+            });
 
         if (written)
         {

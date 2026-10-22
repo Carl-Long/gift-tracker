@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GiftTracker.Application.Features.Users;
 
-public sealed class UserResolutionService(ICurrentUser currentUser, IGiftTrackerDbContext dbContext) : IUserResolutionService
+public sealed class UserResolutionService(ICurrentUser currentUser, IGiftTrackerDbContext dbContext)
+    : IUserResolutionService
 {
     public async Task<Guid> GetOrCreateUserIdAsync(CancellationToken cancellationToken = default)
     {
@@ -44,10 +45,12 @@ public sealed class UserResolutionService(ICurrentUser currentUser, IGiftTracker
         }
     }
 
-    private Task<Guid?> FindUserIdAsync(string identityProvider, string externalSubjectId, CancellationToken cancellationToken)
+    private Task<Guid?> FindUserIdAsync(
+        string identityProvider,
+        string externalSubjectId,
+        CancellationToken cancellationToken)
     {
-        return dbContext.Users
-            .AsNoTracking()
+        return dbContext.Users.AsNoTracking()
             .Where(user => user.IdentityProvider == identityProvider && user.ExternalSubjectId == externalSubjectId)
             .Select(user => (Guid?)user.Id)
             .SingleOrDefaultAsync(cancellationToken);

@@ -16,7 +16,7 @@ public sealed class HttpCurrentUser(IHttpContextAccessor httpContextAccessor) : 
             throw new InvalidOperationException("An authenticated user is required.");
         }
 
-        return principal.FindFirst(claimType)?.Value
-               ?? throw new InvalidOperationException($"Required claim '{claimType}' is missing.");
+        return principal.FindFirst(claimType)?.Value ??
+               throw new InvalidOperationException($"Required claim '{claimType}' is missing.");
     }
 }
