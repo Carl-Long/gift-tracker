@@ -22,21 +22,21 @@ public class OccasionType : AuditableEntity
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentException($"Occasion name cannot exceed {MaxNameLength}", nameof(name));
+            throw new ArgumentException($"OccasionType name is required", nameof(name));
         }
 
         var trimmedName = name.Trim();
 
         if (trimmedName.Length > MaxNameLength)
         {
-            throw new ArgumentException($"Occasion name cannot exceed {MaxDescriptionLength}", nameof(name));
+            throw new ArgumentException($"OccasionType name cannot exceed {MaxNameLength}", nameof(name));
         }
 
         var trimmedDescription = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
 
         if (trimmedDescription?.Length > MaxDescriptionLength)
         {
-            throw new ArgumentException("Occasion description is too long", nameof(description));
+            throw new ArgumentException($"OccasionType description cannot exceed {MaxDescriptionLength}", nameof(description));
         }
 
         Name = trimmedName;

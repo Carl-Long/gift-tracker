@@ -22,6 +22,55 @@ namespace GiftTracker.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("GiftTracker.Domain.Entities.Occasion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Budget")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MaxNumberOfRecipients")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateOnly>("OccasionDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("OccasionTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccasionTypeId");
+
+                    b.HasIndex("UserId", "OccasionTypeId");
+
+                    b.ToTable("Occasions", (string)null);
+                });
+
             modelBuilder.Entity("GiftTracker.Domain.Entities.OccasionType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -113,6 +162,21 @@ namespace GiftTracker.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("GiftTracker.Domain.Entities.Occasion", b =>
+                {
+                    b.HasOne("GiftTracker.Domain.Entities.OccasionType", null)
+                        .WithMany()
+                        .HasForeignKey("OccasionTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GiftTracker.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GiftTracker.Domain.Entities.Recipient", b =>
