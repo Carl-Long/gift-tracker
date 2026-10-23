@@ -1,3 +1,4 @@
+using GiftTracker.Application.Features.Occasions.Services;
 using GiftTracker.Application.Features.OccasionTypes.Services;
 using GiftTracker.Application.Features.Recipients.Services;
 using GiftTracker.Application.Features.Users;
@@ -11,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUserResolutionService, UserResolutionService>();
         services.AddScoped<IRecipientService, RecipientService>();
+        services.AddScoped<IOccasionService, OccasionService>();
         services.AddScoped<IOccasionTypeService, OccasionTypeService>();
 
         return services;

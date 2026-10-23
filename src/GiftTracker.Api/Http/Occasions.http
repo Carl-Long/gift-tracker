@@ -1,0 +1,27 @@
+@host = https://localhost:7000
+@occasionId = 221c2710-0469-4670-4ad7-08df302e4747
+
+### Get occasions
+GET {{host}}/api/v1.0/occasions
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occasion including archived
+GET {{host}}/api/v1.0/occasions?includeArchived=true
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occasions without auth
+GET {{host}}/api/v1.0/occasions
+Accept: application/json
+
+### Get occasion by id
+GET {{host}}/api/v1.0/occasions/{{occasionId}}
+Authorization: Bearer {{$auth.token("keycloak")}}
+Accept: application/json
+
+### Get occasion by id without auth
+GET {{host}}/api/v1.0/occasions/{{occasionId}}
+Accept: application/json
+
+

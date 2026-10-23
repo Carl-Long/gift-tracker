@@ -9,6 +9,7 @@ public class GiftTrackerDbContext(DbContextOptions<GiftTrackerDbContext> options
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Recipient> Recipients => Set<Recipient>();
+    public DbSet<Occasion> Occasions => Set<Occasion>();
     public DbSet<OccasionType> OccasionTypes => Set<OccasionType>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

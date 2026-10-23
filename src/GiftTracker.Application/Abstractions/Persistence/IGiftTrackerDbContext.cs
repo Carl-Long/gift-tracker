@@ -7,6 +7,7 @@ public interface IGiftTrackerDbContext
 {
     DbSet<User> Users { get; }
     DbSet<Recipient> Recipients { get; }
+    DbSet<Occasion> Occasions { get; }
     DbSet<OccasionType> OccasionTypes { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

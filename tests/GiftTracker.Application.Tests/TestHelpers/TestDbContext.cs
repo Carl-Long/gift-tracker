@@ -8,5 +8,6 @@ internal sealed class TestDbContext(DbContextOptions<TestDbContext> options) : D
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Recipient> Recipients => Set<Recipient>();
+    public DbSet<Occasion> Occasions => Set<Occasion>();
     public DbSet<OccasionType> OccasionTypes => Set<OccasionType>();
 }
